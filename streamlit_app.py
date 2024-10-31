@@ -5,8 +5,8 @@ import json
 import pandas as pd
 from openai import OpenAI, Stream
 
-st.title("中文问答匹配")
-st.header('基于开源模型bge的简易RAG')
+st.title("问答对RAG应用")
+st.header('基于开源模型bge-m3的简易RAG')
 
 # 模型相关接口参见 run_rag_service.py
 # 本应用参考https://docs.streamlit.io/develop/tutorials/llms/build-conversational-apps#build-a-simple-chatbot-gui-with-streaming

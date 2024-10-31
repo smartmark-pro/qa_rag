@@ -1,4 +1,3 @@
-import sys
 import logging
 import torch
 import json
@@ -7,9 +6,6 @@ from starlette.middleware.cors import CORSMiddleware
 
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
-
-
-from typing import List, Union
 from pydantic import BaseModel
 
 
