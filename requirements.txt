@@ -3,3 +3,5 @@ openai==1.52.2
 pandas==2.2.3
 langchain==0.3.4
 langchain-text-splitters==0.3.0
+langchain-community==0.3.3
+langchain-core==0.3.13
