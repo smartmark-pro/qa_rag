@@ -89,16 +89,16 @@ st.sidebar.header('可调整参数')
 match_method = st.sidebar.selectbox("问答对召回方式", ("sparse", "dense", "colbert", "custom"))
 topk = st.sidebar.slider('最大召回数量', 1, 100, 10)
 if match_method == "sparse":
-    default_value = 0
+    default_value = 0.0
 else:
     default_value = 0.5
-min_score = st.sidebar.number_input("召回最小阈值", min_value=default_value)
+min_score = st.sidebar.number_input("召回最小阈值", value=default_value, min_value=0.0)
 
 custom_weights = []
 if match_method=="custom":
-    ratio1 = st.number_input("sparse比例值", value=1, min_value=0.0, max_value=1.0, step=0.1)
-    ratio2 = st.number_input("dense比例值", value=1, min_value=0.0, max_value=1.0, step=0.1)
-    ratio3 = st.number_input("colbert比例值", value=1,  min_value=0.0, max_value=1.0, step=0.1)
+    ratio1 = st.number_input("sparse比例值", value=1.0, min_value=0.0, max_value=1.0, step=0.1)
+    ratio2 = st.number_input("dense比例值", value=1.0, min_value=0.0, max_value=1.0, step=0.1)
+    ratio3 = st.number_input("colbert比例值", value=1.0,  min_value=0.0, max_value=1.0, step=0.1)
     custom_weights = [ratio1, ratio2, ratio3]
 
 is_use_rerank = st.sidebar.checkbox("是否使用rerank召回")

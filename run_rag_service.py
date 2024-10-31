@@ -111,7 +111,7 @@ async def embeddings_score(request: EmbeddingScoreRequest):
                             return_dense=True, 
                                 )['dense_vecs']
         similarity = embeddings_1 @ embeddings.get("dense_vecs").T
-        scores = [ float(sim[0]) for sim in similarity]
+        scores = [ float(sim) for sim in similarity[0]]
     elif request.method==ComputeScoreType.sparse:
         embeddings_1 = model.encode(request.query, 
                                 batch_size=batch_size, 
@@ -128,16 +128,28 @@ async def embeddings_score(request: EmbeddingScoreRequest):
         for e in embeddings["colbert_vecs"]:
             score = model.colbert_score(embeddings_1[0], e)
             scores.append(float(score))
-    elif request.method==ComputeScoreType.custom:
-        # TODO 
-        pass
-        # sentence_pairs = [[i,j] for i in sentences_1 for j in sentences_2]
-        # model.compute_score(sentence_pairs, 
-        #                   max_passage_length=128, # a smaller max length leads to a lower latency
-        #                   weights_for_different_modes=[0.4, 0.2, 0.4])
-        return []
     else:
-        return Response(status_code=400, content="参数错误， 方法不存在")
+        # TODO 有待进一步优化
+        embeddings_1 = model.encode(request.query, max_length=max_size, return_dense=True, return_sparse=True, return_colbert_vecs=True)
+        scores1 = []
+        for e in embeddings["lexical_weights"]:
+            lexical_score = model.compute_lexical_matching_score(embeddings_1["lexical_weights"][0], e)
+            scores1.append(lexical_score)
+        similarity = embeddings_1['dense_vecs'] @ embeddings.get("dense_vecs").T
+        scores2 = [float(sim) for sim in similarity[0]]
+        
+        scores3 = []
+        for e in embeddings["colbert_vecs"]:
+            score = model.colbert_score(embeddings_1["colbert_vecs"][0], e)
+            scores3.append(float(score))
+        scores = []
+        weight_sum = sum(request.weight)
+        weight_norm = [w/weight_sum for w in request.weight]
+        # print(request.weight, weight_norm, scores1, scores2, scores3)
+        for i in range(len(scores1)):
+            sc = scores1[i]*weight_norm[0] + scores2[i]*weight_norm[1] + scores3[i]*weight_norm[2]
+            scores.append(sc)
+
     # 整理格式
     new = []
     for i, score in enumerate(scores):
