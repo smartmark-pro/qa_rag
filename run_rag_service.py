@@ -40,6 +40,7 @@ reranker = FlagReranker('BAAI/bge-reranker-v2-m3', use_fp16=True) # Setting use_
 
 from FlagEmbedding import BGEM3FlagModel
 
+# TODO https://huggingface.co/aapot/bge-m3-onnx 如果是cpu可以考虑用onnx， 据说推理速度也很快
 model = BGEM3FlagModel('BAAI/bge-m3',  use_fp16=True)
 
 max_size = 512
